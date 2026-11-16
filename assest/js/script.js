@@ -228,6 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let sectionIsActive = false;
         let playAttemptPending = false;
         let autoplayBlocked = false;
+        let hasUserInteracted = false;
         let targetVolume = 0;
         let fadeFrame = 0;
         let lastFrameTime = 0;
@@ -284,19 +285,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const syncBirdsong = () => {
           if (document.hidden) targetVolume = 0;
           if (targetVolume > 0 && birdsong.paused) {
-            playBirdsong();
+            playBirdsong(hasUserInteracted);
           }
           if (!fadeFrame) fadeFrame = requestAnimationFrame(animateVolume);
-        };
-
-        // Mobile browsers commonly require play() to run directly inside a
-        // user gesture. Start it synchronously during touch/scroll when the
-        // section is visible; the observer still controls the volume fade.
-        const startBirdsongFromGesture = () => {
-          if (document.hidden || birdsong.paused === false) return;
-          const rect = section.getBoundingClientRect();
-          if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
-          playBirdsong(true);
         };
 
         const updateSectionVisibility = () => {
@@ -319,20 +310,20 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener("scroll", updateSectionVisibility, { passive: true });
         window.addEventListener("resize", updateSectionVisibility);
 
-        // On touch devices this runs in the trusted gesture handler, unlike
-        // the observer callback, so Safari/Chrome can grant audio playback.
-        document.addEventListener("touchstart", startBirdsongFromGesture, { passive: true });
-        document.addEventListener("pointerdown", startBirdsongFromGesture, { passive: true });
+        // Remember a touch, click, or key gesture anywhere on the page.
+        // Playback then starts as soon as the section becomes visible.
+        const rememberUserGesture = () => {
+          hasUserInteracted = true;
+          autoplayBlocked = false;
+          updateSectionVisibility();
+        };
+        document.addEventListener("touchstart", rememberUserGesture, { passive: true });
+        document.addEventListener("pointerdown", rememberUserGesture, { passive: true });
+        document.addEventListener("keydown", rememberUserGesture);
 
         window.addEventListener("load", updateSectionVisibility, { once: true });
         window.addEventListener("pageshow", updateSectionVisibility);
         requestAnimationFrame(updateSectionVisibility);
-        document.addEventListener("pointerdown", () => {
-          if (sectionIsActive) syncBirdsong(true);
-        }, { passive: true });
-        document.addEventListener("keydown", () => {
-          if (sectionIsActive && birdsong.paused) playBirdsong(true);
-        });
         document.addEventListener("visibilitychange", () => {
           updateSectionVisibility();
         });
