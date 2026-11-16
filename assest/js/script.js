@@ -225,8 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const section = document.querySelector(".secTwo");
         const birdsong = document.querySelector("#secTwo-birdsong");
         if (!section || !birdsong) return;
-        const enableButton = section.querySelector(".birdsong-enable");
         let sectionIsActive = false;
+        let playAttemptPending = false;
+        let autoplayBlocked = false;
         let targetVolume = 0;
         let fadeFrame = 0;
         let lastFrameTime = 0;
@@ -262,15 +263,21 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         };
 
-        const playBirdsong = () => {
+        const playBirdsong = (fromUserGesture = false) => {
+          if (playAttemptPending || (!fromUserGesture && autoplayBlocked)) return;
+          playAttemptPending = true;
           const playRequest = birdsong.play();
           if (playRequest && typeof playRequest.then === "function") {
             playRequest.then(() => {
-              if (enableButton) enableButton.hidden = true;
+              autoplayBlocked = false;
+              playAttemptPending = false;
             }).catch(() => {
-              // Audible autoplay may be blocked until the visitor opts in.
-              if (sectionIsActive && enableButton) enableButton.hidden = false;
+              // Browsers can block audible autoplay until a user gesture.
+              autoplayBlocked = true;
+              playAttemptPending = false;
             });
+          } else {
+            playAttemptPending = false;
           }
         };
 
@@ -289,7 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (document.hidden || birdsong.paused === false) return;
           const rect = section.getBoundingClientRect();
           if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
-          playBirdsong();
+          playBirdsong(true);
         };
 
         const updateSectionVisibility = () => {
@@ -324,12 +331,11 @@ document.addEventListener("DOMContentLoaded", () => {
           if (sectionIsActive) syncBirdsong(true);
         }, { passive: true });
         document.addEventListener("keydown", () => {
-          if (sectionIsActive) syncBirdsong(true);
+          if (sectionIsActive && birdsong.paused) playBirdsong(true);
         });
         document.addEventListener("visibilitychange", () => {
           updateSectionVisibility();
         });
-        enableButton?.addEventListener("click", playBirdsong);
       })();
 
 // Extracted from index.php

@@ -1321,19 +1321,6 @@ html.page-loading main > :not(.openingScreen) {
     line-height: 1.8em;
     font-family: "Poppins", sans-serif;
 }
-.birdsong-enable {
-  display: block;
-  margin: 1.25rem 0 0 auto;
-  padding: .65rem 1.1rem;
-  border: 1px solid #69663b;
-  border-radius: 999px;
-  background: transparent;
-  color: #69663b;
-  font: inherit;
-  cursor: pointer;
-}
-.birdsong-enable[hidden] { display: none; }
-
 /* Editorial collage hero */
 .collage-hero {
   position: relative;

@@ -49,7 +49,6 @@
           <p class="hero-detail text-end">Long before cities rose from stone and steel,<br class="desktop-break">
             wood sheltered families, carried stories across generations,<br class="desktop-break">
             and became part of the places we call <b>home.</b></p>
-          <button class="birdsong-enable" type="button" hidden>Play birdsong</button>
         </div>
       </section>
       <section class="py-5 container">
