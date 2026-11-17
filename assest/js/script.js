@@ -283,7 +283,15 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         const syncBirdsong = () => {
-          if (document.hidden) targetVolume = 0;
+          if (document.hidden || targetVolume === 0) {
+            targetVolume = 0;
+            birdsong.pause();
+            birdsong.volume = 0;
+            if (fadeFrame) cancelAnimationFrame(fadeFrame);
+            fadeFrame = 0;
+            lastFrameTime = 0;
+            return;
+          }
           if (targetVolume > 0 && birdsong.paused) {
             playBirdsong(hasUserInteracted);
           }
@@ -292,10 +300,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const updateSectionVisibility = () => {
           const rect = section.getBoundingClientRect();
-          const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
-          const visibleRatio = rect.height ? visibleHeight / Math.min(rect.height, window.innerHeight) : 0;
-          // Volume rises with the section's visible area, then falls as it leaves view.
-          targetVolume = visibleHeight > 0 && !document.hidden
+          const viewport = window.visualViewport;
+          const viewportTop = viewport ? viewport.offsetTop : 0;
+          const viewportHeight = viewport ? viewport.height : window.innerHeight;
+          const viewportWidth = viewport ? viewport.width : window.innerWidth;
+          const visibleHeight = Math.max(0, Math.min(rect.bottom, viewportTop + viewportHeight) - Math.max(rect.top, viewportTop));
+          const visibleWidth = Math.max(0, Math.min(rect.right, viewportWidth) - Math.max(rect.left, 0));
+          const visibleRatio = rect.height
+            ? visibleHeight / Math.min(rect.height, viewportHeight)
+            : 0;
+          // Play only while some of secTwo is inside the visible mobile/desktop viewport.
+          targetVolume = visibleHeight > 0 && visibleWidth > 0 && !document.hidden
             ? Math.min(maxVolume, Math.max(0.04, visibleRatio * maxVolume))
             : 0;
           syncBirdsong();
