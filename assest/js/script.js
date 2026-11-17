@@ -222,10 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Extracted from index.php
 (() => {
+        const initializeBirdsong = () => {
         const section = document.querySelector(".secTwo");
         const birdsong = document.querySelector("#secTwo-birdsong");
         if (!section || !birdsong) return;
-        let sectionIsActive = false;
         let playAttemptPending = false;
         let autoplayBlocked = false;
         let hasUserInteracted = false;
@@ -298,7 +298,6 @@ document.addEventListener("DOMContentLoaded", () => {
           targetVolume = visibleHeight > 0 && !document.hidden
             ? Math.min(maxVolume, Math.max(0.04, visibleRatio * maxVolume))
             : 0;
-          sectionIsActive = targetVolume > 0;
           syncBirdsong();
         };
 
@@ -309,6 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.addEventListener("scroll", updateSectionVisibility, { passive: true });
         window.addEventListener("resize", updateSectionVisibility);
+        window.visualViewport?.addEventListener("scroll", updateSectionVisibility, { passive: true });
+        window.visualViewport?.addEventListener("resize", updateSectionVisibility, { passive: true });
 
         // Remember a touch, click, or key gesture anywhere on the page.
         // Playback then starts as soon as the section becomes visible.
@@ -327,6 +328,13 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("visibilitychange", () => {
           updateSectionVisibility();
         });
+        };
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", initializeBirdsong, { once: true });
+        } else {
+          initializeBirdsong();
+        }
       })();
 
 // Extracted from index.php
