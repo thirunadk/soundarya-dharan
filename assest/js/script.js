@@ -251,6 +251,103 @@ document.addEventListener("DOMContentLoaded", () => {
         const section = document.querySelector(".secTwo");
         const birdsong = document.querySelector("#secTwo-birdsong");
         if (!section || !birdsong) return;
+
+        // iOS Safari does not reliably allow HTMLMediaElement.volume changes.
+        // Use a Web Audio gain node on phones so the section fade works there.
+        if (window.matchMedia("(max-width: 767px), (pointer: coarse)").matches) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          let audioContext = null;
+          let gainNode = null;
+          let hasUserGesture = false;
+          let isVisible = false;
+          let fadeFrame = 0;
+          let lastFrameTime = 0;
+          const maxVolume = 0.45;
+
+          if (AudioContextClass) {
+            try {
+              audioContext = new AudioContextClass();
+              gainNode = audioContext.createGain();
+              gainNode.gain.value = 0;
+              audioContext.createMediaElementSource(birdsong).connect(gainNode);
+              gainNode.connect(audioContext.destination);
+              // Let the Web Audio gain node control output level.
+              birdsong.volume = 1;
+            } catch (error) {
+              audioContext = null;
+              gainNode = null;
+            }
+          }
+
+          const playForSection = () => {
+            if (!isVisible) return;
+            if (audioContext?.state === "suspended") audioContext.resume().catch(() => {});
+            const playRequest = birdsong.play();
+            if (playRequest?.catch) playRequest.catch(() => {});
+            if (!fadeFrame) fadeFrame = requestAnimationFrame(fadeAudio);
+          };
+
+          const fadeAudio = (time) => {
+            if (!lastFrameTime) lastFrameTime = time;
+            const elapsed = time - lastFrameTime;
+            lastFrameTime = time;
+            const target = isVisible ? maxVolume : 0;
+
+            if (gainNode) {
+              const current = gainNode.gain.value;
+              const step = (maxVolume * elapsed) / 1400;
+              gainNode.gain.value = Math.abs(target - current) <= step
+                ? target
+                : current + Math.sign(target - current) * step;
+            } else {
+              // Fallback for mobile browsers without Web Audio support.
+              birdsong.volume = isVisible ? maxVolume : 0;
+            }
+
+            const currentVolume = gainNode ? gainNode.gain.value : birdsong.volume;
+            if (!isVisible && currentVolume <= 0.001) {
+              birdsong.pause();
+              fadeFrame = 0;
+              lastFrameTime = 0;
+              return;
+            }
+            if (Math.abs(target - currentVolume) > 0.001) {
+              fadeFrame = requestAnimationFrame(fadeAudio);
+            } else {
+              fadeFrame = 0;
+              lastFrameTime = 0;
+            }
+          };
+
+          const updateMobileSectionVisibility = () => {
+            const rect = section.getBoundingClientRect();
+            isVisible = !document.hidden && rect.bottom > 0 && rect.top < window.innerHeight;
+            if (isVisible) playForSection();
+            if (!isVisible && !fadeFrame) fadeFrame = requestAnimationFrame(fadeAudio);
+          };
+
+          const unlockOnGesture = () => {
+            hasUserGesture = true;
+            if (audioContext?.state === "suspended") audioContext.resume().catch(() => {});
+            updateMobileSectionVisibility();
+          };
+
+          // A direct tap on secTwo starts playback within the mobile browser's
+          // required user gesture, then the gain node fades the sound in.
+          section.addEventListener("pointerdown", unlockOnGesture, { passive: true });
+          section.addEventListener("touchstart", unlockOnGesture, { passive: true });
+          document.addEventListener("pointerdown", unlockOnGesture, { passive: true });
+          document.addEventListener("touchstart", unlockOnGesture, { passive: true });
+          window.addEventListener("scroll", updateMobileSectionVisibility, { passive: true });
+          window.addEventListener("resize", updateMobileSectionVisibility);
+          window.visualViewport?.addEventListener("scroll", updateMobileSectionVisibility, { passive: true });
+          window.visualViewport?.addEventListener("resize", updateMobileSectionVisibility, { passive: true });
+          document.addEventListener("visibilitychange", updateMobileSectionVisibility);
+          window.addEventListener("pageshow", updateMobileSectionVisibility);
+          requestAnimationFrame(updateMobileSectionVisibility);
+          return;
+        }
+
         let playAttemptPending = false;
         let autoplayBlocked = false;
         let hasUserInteracted = false;
