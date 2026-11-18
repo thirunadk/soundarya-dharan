@@ -3,7 +3,7 @@
   font-family: "Avenir Next Local";
   src: url("../font/Avenir Next.ttc") format("truetype-collection");
   font-weight: 300 800;
-  font-style: normal;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -1116,6 +1116,22 @@ h3 {
   src: url("../font/Raflesia.otf") format("opentype");
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Raflesia";
+  src: url("../font/Raflesia.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Scarlet Jazz";
+  src: url("../font/Scarlet-Jazz.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -3646,7 +3662,10 @@ article.craft-value {
   .story-three-side-image { display: none; }
   .story-three-detail > img { height: clamp(180px, 25vw, 240px); }
   .story-three-title-block > .story-three-cupboard-sequence { height: clamp(180px, 25vw, 240px); }
-  .story-four-copy { width: min(70%, 600px); }
+  .story-four-copy { width: min(100%, 600px); }
+  .story-four-description{
+    font-size: 13px;
+  }
   h2#story-four-heading {
     line-height: 1.4em;
 }
@@ -3731,11 +3750,12 @@ article.craft-value br {
   .caption-break, .desktop-break { display: none; }
 
   .secTwo {
-    height: 100vh;
+    height: 78vh;
     min-height: 0;
     margin-top: 2rem !important;
     padding: 0rem 1.25rem !important;
-    background-position: 35% center;
+    background-position: bottom;
+    background-size: contain;
     align-items: start !important;
   }
   .secTwo > .col-md-5 { display: none; }
@@ -3772,7 +3792,7 @@ article.craft-value br {
   .story-three-message { width: calc(100% - 32px); }
   .story-three-message > p { font-size: .85rem; }
       .story-four-hero {
-        min-height: 90vh;
+        min-height: 70vh;
         background-position: bottom;
         background-size: contain;
     }
@@ -3842,9 +3862,9 @@ article.craft-value br {
 }
 @media(max-width: 830px){
   .sd-line {
-    width: 95%;
+    width: 100%;
     top: -9px;
-    left: 19px;
+    left: -3px;
 }
 }
 @media(max-width: 1200px){

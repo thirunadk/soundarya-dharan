@@ -13,6 +13,31 @@ document.documentElement.classList.add("page-loading");
       }
 
 document.addEventListener("DOMContentLoaded", () => {
+// Play the craftsmanship film only while its video is visible.
+(() => {
+        const video = document.querySelector('video[aria-label="Soundarya craftsmanship video"]');
+        if (!video) return;
+
+        const playVideo = () => {
+          const playRequest = video.play();
+          if (playRequest?.catch) playRequest.catch(() => {});
+        };
+
+        if (!("IntersectionObserver" in window)) {
+          playVideo();
+          return;
+        }
+
+        const observer = new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+            playVideo();
+          } else {
+            video.pause();
+          }
+        }, { threshold: [0, 0.25] });
+        observer.observe(video);
+      })();
+
 // Extracted from index.php
 (() => {
         const section = document.querySelector(".sdDiffrenceSec");
