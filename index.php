@@ -61,10 +61,13 @@
             </h4>
           </div>
           <div class="col-md-6">
-           <video class="w-100" controls loop playsinline preload="metadata" aria-label="Soundarya craftsmanship video">
+           <div class="craftsmanship-video">
+            <video class="w-100" loop playsinline preload="metadata" aria-label="Soundarya craftsmanship video">
             <source src="./assest/images/soundarya_x_dharan_brand_film.mp4" type="video/mp4">
               Your browser does not support HTML video playback.
             </video>
+            <button class="craftsmanship-video-toggle" type="button" aria-label="Play craftsmanship video" aria-pressed="false"><i class="fa-solid fa-play" aria-hidden="true"></i></button>
+           </div>
           </div>
         </div>
           <p class="text-center videoDesc mt-4">At Soundarya, we don't simply build interiors; we reveal the character hidden within every piece of timber. <br> For over three decades, our craftsmen have transformed nature's most timeless material into homes <br> designed to be lived in, loved, and passed on.</p>

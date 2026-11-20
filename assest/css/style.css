@@ -1500,6 +1500,54 @@ html.page-loading main > :not(.openingScreen) {
      line-height: 1.8em;
 }
 
+.craftsmanship-video {
+  position: relative;
+  line-height: 0;
+}
+
+.craftsmanship-video-toggle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 3.5rem;
+  height: 3.5rem;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(23, 20, 18, 0.65);
+  color: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 180ms ease, background-color 180ms ease;
+}
+
+.craftsmanship-video.is-playing .craftsmanship-video-toggle {
+  opacity: 0;
+}
+
+.craftsmanship-video.is-playing:hover .craftsmanship-video-toggle,
+.craftsmanship-video.is-playing:focus-within .craftsmanship-video-toggle {
+  opacity: 1;
+}
+
+.craftsmanship-video-toggle:hover {
+  background: rgba(23, 20, 18, 0.85);
+}
+
+.craftsmanship-video-toggle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .craftsmanship-video-toggle { transition: none; }
+}
+
 .scroll-fade-image {
   opacity: 0;
   transition: opacity 1.4s ease;

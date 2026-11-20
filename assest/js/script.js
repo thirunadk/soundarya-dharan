@@ -13,29 +13,32 @@ document.documentElement.classList.add("page-loading");
       }
 
 document.addEventListener("DOMContentLoaded", () => {
-// Play the craftsmanship film only while its video is visible.
+// Keep the craftsmanship video paused until the viewer chooses to play it.
 (() => {
         const video = document.querySelector('video[aria-label="Soundarya craftsmanship video"]');
         if (!video) return;
+        const toggle = video.parentElement.querySelector(".craftsmanship-video-toggle");
+        if (!toggle) return;
 
-        const playVideo = () => {
-          const playRequest = video.play();
-          if (playRequest?.catch) playRequest.catch(() => {});
+        const syncToggle = () => {
+          const playing = !video.paused;
+          toggle.setAttribute("aria-label", `${playing ? "Pause" : "Play"} craftsmanship video`);
+          toggle.setAttribute("aria-pressed", String(playing));
+          toggle.innerHTML = `<i class="fa-solid ${playing ? "fa-pause" : "fa-play"}" aria-hidden="true"></i>`;
+          video.parentElement.classList.toggle("is-playing", playing);
         };
 
-        if (!("IntersectionObserver" in window)) {
-          playVideo();
-          return;
-        }
-
-        const observer = new IntersectionObserver(([entry]) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-            playVideo();
+        toggle.addEventListener("click", () => {
+          if (video.paused) {
+            const playRequest = video.play();
+            if (playRequest?.catch) playRequest.catch(() => {});
           } else {
             video.pause();
           }
-        }, { threshold: [0, 0.25] });
-        observer.observe(video);
+        });
+        video.addEventListener("play", syncToggle);
+        video.addEventListener("pause", syncToggle);
+        syncToggle();
       })();
 
 // Extracted from index.php
