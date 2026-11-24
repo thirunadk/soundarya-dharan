@@ -1544,6 +1544,58 @@ html.page-loading main > :not(.openingScreen) {
   opacity: 1;
 }
 
+.craftsmanship-video-seek {
+  --video-progress: 0%;
+  position: absolute;
+  z-index: 2;
+  right: 4%;
+  bottom: 12px;
+  left: 4%;
+  width: 92%;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.craftsmanship-video:hover .craftsmanship-video-seek,
+.craftsmanship-video:focus-within .craftsmanship-video-seek {
+  opacity: 1;
+}
+
+.craftsmanship-video-seek::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #fff var(--video-progress), rgba(255,255,255,.5) var(--video-progress));
+}
+
+.craftsmanship-video-seek::-moz-range-track {
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255,255,255,.5);
+}
+
+.craftsmanship-video-seek::-moz-range-progress { height: 3px; background: #fff; }
+.craftsmanship-video-seek::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+  margin-top: -4px;
+  appearance: none;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+}
+.craftsmanship-video-seek::-moz-range-thumb {
+  width: 11px;
+  height: 11px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .craftsmanship-video-toggle { transition: none; }
 }

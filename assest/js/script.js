@@ -19,10 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!videos.length) return;
 
         videos.forEach((video) => {
-        // Set muted in JavaScript as well as markup for stricter autoplay policies.
-        video.muted = true;
+        // Keep audio enabled; browsers may require the play button before sound starts.
+        video.muted = false;
         const wrapper = video.closest(".craftsmanship-video");
         const toggle = wrapper?.querySelector(".craftsmanship-video-toggle");
+        const seek = wrapper?.querySelector(".craftsmanship-video-seek");
         if (!toggle) return;
 
         const syncToggle = () => {
@@ -38,6 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
           if (playRequest?.catch) playRequest.catch(() => {});
         };
 
+        const updateSeek = () => {
+          if (!seek || !Number.isFinite(video.duration) || video.duration <= 0) return;
+          const progress = (video.currentTime / video.duration) * 100;
+          seek.value = String(progress);
+          seek.style.setProperty("--video-progress", `${progress}%`);
+        };
+
+        seek?.addEventListener("input", () => {
+          if (Number.isFinite(video.duration) && video.duration > 0) {
+            video.currentTime = (Number(seek.value) / 100) * video.duration;
+          }
+        });
+        video.addEventListener("timeupdate", updateSeek);
+        video.addEventListener("loadedmetadata", updateSeek);
+
         toggle.addEventListener("click", () => {
           if (video.paused) {
             playVideo();
@@ -52,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if ("IntersectionObserver" in window && wrapper) {
           const observer = new IntersectionObserver(([entry]) => {
             if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+              // Attempt audible autoplay; browser policy may defer playback until a click.
               playVideo();
             } else {
               video.pause();
