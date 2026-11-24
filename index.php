@@ -68,7 +68,7 @@
             </video>
             <button class="craftsmanship-video-toggle" type="button" aria-label="Play craftsmanship video" aria-pressed="false"><i class="fa-solid fa-play" aria-hidden="true"></i></button>
            </div>
-           <img class="scroll-fade-image d-md-none d-block" src="./assest/images/sd-img-4.webp" alt="Warm timber interior detail">
+           <img class="d-md-none d-block" src="./assest/images/sd-img-4.webp" alt="Warm timber interior detail">
           </div>
         </div>
           <p class="text-center videoDesc mt-4">At Soundarya, we don't simply build interiors; we reveal the character hidden within every piece of timber. <br> For over three decades, our craftsmen have transformed nature's most timeless material into homes <br> designed to be lived in, loved, and passed on.</p>
