@@ -61,13 +61,14 @@
             </h4>
           </div>
           <div class="col-md-6">
-           <div class="craftsmanship-video">
-            <video class="w-100" loop playsinline preload="metadata" aria-label="Soundarya craftsmanship video">
+           <div class="craftsmanship-video d-md-block d-none">
+            <video class="w-100" loop muted playsinline preload="metadata" aria-label="Soundarya craftsmanship video">
             <source src="./assest/images/soundarya_x_dharan_brand_film.mp4" type="video/mp4">
               Your browser does not support HTML video playback.
             </video>
             <button class="craftsmanship-video-toggle" type="button" aria-label="Play craftsmanship video" aria-pressed="false"><i class="fa-solid fa-play" aria-hidden="true"></i></button>
            </div>
+           <img class="scroll-fade-image d-md-none d-block" src="./assest/images/sd-img-4.webp" alt="Warm timber interior detail">
           </div>
         </div>
           <p class="text-center videoDesc mt-4">At Soundarya, we don't simply build interiors; we reveal the character hidden within every piece of timber. <br> For over three decades, our craftsmen have transformed nature's most timeless material into homes <br> designed to be lived in, loved, and passed on.</p>
@@ -76,7 +77,14 @@
             <p class="videoDesc text-md-start text-center">Because while trends fade, true craftsmanship <br> only grows more beautiful with time</p>
           </div>
           <div class="col-md-6">
-           <img class="scroll-fade-image" src="./assest/images/sd-img-4.webp" alt="Warm timber interior detail">
+           <img class="scroll-fade-image d-md-block d-none" src="./assest/images/sd-img-4.webp" alt="Warm timber interior detail">
+           <div class="craftsmanship-video d-md-none d-block">
+            <video class="w-100" loop muted playsinline preload="metadata" aria-label="Soundarya craftsmanship video">
+            <source src="./assest/images/soundarya_x_dharan_brand_film.mp4" type="video/mp4">
+              Your browser does not support HTML video playback.
+            </video>
+            <button class="craftsmanship-video-toggle" type="button" aria-label="Play craftsmanship video" aria-pressed="false"><i class="fa-solid fa-play" aria-hidden="true"></i></button>
+           </div>
           </div>
         </div>
       </section>
