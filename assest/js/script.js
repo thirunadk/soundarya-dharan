@@ -851,12 +851,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Extracted from index.php
 (() => {
-        const contactButton = document.querySelector(".site-header .headerCTA");
-        const contactSection = document.querySelector("#contact");
-        contactButton?.addEventListener("click", () => {
-          contactSection?.scrollIntoView({
+        const contactButtons = document.querySelectorAll(".headerCTA");
+        const contactForm = document.querySelector("#contact-form");
+        contactButtons.forEach((contactButton) => {
+          contactButton.addEventListener("click", () => {
+            contactForm?.scrollIntoView({
             behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
-            block: "start"
+            block: "center"
+            });
+            window.setTimeout(() => document.querySelector("#contact-name")?.focus({ preventScroll: true }), 500);
           });
         });
 
